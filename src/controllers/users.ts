@@ -45,16 +45,30 @@ export async function getUser (req: Request<GetParams>, res: Response){
 export async function createUser (req: Request <{}, {}, Omit<UserDto, "id">>, res: Response) {
 	const user = req.body;
 
+    if (!user.name){
+        return res.status(400).json({
+            field: "name",
+            message: "Invalid name"
+        })
+    }
+
     while (!user.email || !emailRegex.test(user.email)){
-        return res.status(404).json({
+        return res.status(400).json({
             field: 'email',
             message: "Invalid email"});
     };
 
+    if (!user.password){
+        return res.status(400).json({
+            field: "password",
+            message: "Invalid password"
+        })
+    }
+
     const useCase = new CreateUserUseCase();
     const createdUser = await useCase.handle(user);
 
-    return res.json(createdUser);
+    return res.status(201).json(createdUser);
 };
 
 
@@ -112,7 +126,7 @@ export async function deleteUser (req: Request<DeleteParams>, res: Response) {
     const useCase = new DeleteUserUseCase();
     await useCase.handle(id);
 
-    return res.json({
+    return res.status(204).json({
         message: "User deleted successfully"
     });
 };

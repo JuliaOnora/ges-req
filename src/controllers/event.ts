@@ -55,12 +55,12 @@ export async function createEvent (req: Request <{}, {}, PurchaseDto>, res: Resp
     const purchase = req.body;
 
     if (!purchase.userId || !purchase.productId || !purchase.qty){
-        return res.status(404).json({
+        return res.status(400).json({
             message: "Invalid blanks"});
     }
 
     const useCase = new CreateEventUseCase();
     const createdPurchase = await useCase.handle(purchase);
 
-    return res.json(createdPurchase);
+    return res.status(201).json(createdPurchase);
 };

@@ -51,7 +51,7 @@ export async function createProject (req: Request <{}, {}, ProjectsDto>, res: Re
     // }
 
     while (!project.name || !project.members){
-        return res.status(404).json({
+        return res.status(400).json({
             field: 'name',
             message: "Invalid blanks for Product"});
     }
@@ -59,7 +59,7 @@ export async function createProject (req: Request <{}, {}, ProjectsDto>, res: Re
     const useCase = new CreateProjectUseCase();
     const createdProject = await useCase.handle(project);
     
-    return res.json(createdProject);
+    return res.status(200).json(createdProject);
 
 };
 
@@ -93,7 +93,7 @@ export async function updateProject (req: Request <PutParams, {}, Omit<ProjectsD
         members: projectData.members, 
         description: projectData.description} );
 
-    return res.status(200).json(createdProject);
+    return res.status(201).json(createdProject);
 };
 
 
@@ -125,7 +125,7 @@ export async function deleteProject (req: Request<DeleteParams>, res: Response) 
     const useCase = new DeleteProjectUseCase();
     await useCase.handle(id);
 
-    return res.json({
+    return res.status(204).json({
         message: "Product deleted successfully"
     });
 };
