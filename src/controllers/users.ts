@@ -108,7 +108,7 @@ interface DeleteParams{
  
 export async function deleteUser (req: Request<DeleteParams>, res: Response) {
     const { id } = req.params;
-    const userIndex = await prisma.user.findFirst({ // Nessa linha, referenciamos a tabela //// PRISMA
+    const userIndex = await prisma.user.findFirst({ 
         where: {
             id: {
                 equals: String(id)
@@ -116,10 +116,6 @@ export async function deleteUser (req: Request<DeleteParams>, res: Response) {
         }
     })
 
-    // const errors = vr.validationResults(req);
-    // if (!errors.isEmpty()){
-    //         return res.status(400).json({errors: errors.array()});
-    // }
     
     if (!userIndex){ // undefined é falsy
         return res.status(404).json({
@@ -134,7 +130,3 @@ export async function deleteUser (req: Request<DeleteParams>, res: Response) {
         message: "User deleted successfully"
     });
 };
-// function validationResults(req: Request<{}, {}, ProductsDto, import("qs").ParsedQs, Record<string, any>>) {
-//     throw new Error("Function not implemented.");
-// }
-
