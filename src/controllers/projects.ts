@@ -64,16 +64,16 @@ export async function createProject (req: Request <{}, {}, ProjectsDto>, res: Re
 };
 
 interface PutParams{
-    id: string
+    projectId: string
 };
 
 export async function updateProject (req: Request <PutParams, {}, Omit<ProjectsDto, "id">>, res: Response){
-    const { id } = req.params;
+    const { projectId } = req.params;
     const projectData = req.body;
 
 
     const idProjectUseCase = new GetProjectUseCase();
-    const getProject = await idProjectUseCase.handle(String(id));
+    const getProject = await idProjectUseCase.handle(String(projectId));
 
     // const errors = vr.validationResults(req);
     // if (!errors.isEmpty()){
@@ -82,16 +82,18 @@ export async function updateProject (req: Request <PutParams, {}, Omit<ProjectsD
 
     if (!getProject){
         return res.status(404).json({
-            message: "Product not Found to update!"});
+            message: "Project not Found to update!"});
     };
 
     // Permite atualização somente do valor e da descrição
     const useCase = new UpdateProjectUseCase();
     const createdProject = await useCase.handle({
-        id: String(id), 
+        id: String(projectId), 
         name: projectData.name, 
         members: projectData.members, 
-        description: projectData.description} );
+        description: projectData.description,
+        status: projectData.status
+    } );
 
     return res.status(201).json(createdProject);
 };

@@ -1,66 +1,86 @@
 import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 
-import { PurchaseDto } from "../domain/dtos/purchase";
+import { EventDto } from "../domain/dtos/event";
 
 import { CreateEventUseCase } from "../useCases/event/createEvent";
 import { ListEventsUseCase } from "../useCases/event/listEvents";
 import { GetEventUseCase } from "../useCases/event/getEvent";
+import { UpdateEventUseCase } from "../useCases/event/updateEvent"; 
 
 const prisma = new PrismaClient();
 
 export async function listEvents (req: Request, res: Response) {
     const useCase = new ListEventsUseCase();
-    const listPurchase = await useCase.handle();
+    const listEvent = await useCase.handle();
 
 
-    return res.status(200).json(listPurchase);
+    return res.status(200).json(listEvent);
 };
 
 
 interface GetParams{
-    userId: string
+    eventId: string
 };
 
 export async function getEvent (req: Request<GetParams>, res: Response) {
-	const { userId } = req.params;
+	const { eventId } = req.params;
 
     const useCase = new GetEventUseCase();
-    const userPurchase = await useCase.handle(userId);
+    const event = await useCase.handle(eventId);
 
 
-    if (!userPurchase){
+    if (!event){
         return res.status(404).json({
-            message: "Purchase not found"});
+            message: "Event not found"});
     }
-
-    let total: number = 0;
-
-    for (let i = 0; i < userPurchase.length; i++){
-        total += userPurchase[i].qty * Number(userPurchase[i].product.value
-            );
-    };
-
-    const upList = JSON.parse(JSON.stringify(userPurchase));
     
-    
-    upList.push({"totalValue": total.toFixed(2)});
 
-    return res.status(200).json(upList);
+    return res.status(200).json(event);
 };
 
 
 
-export async function createEvent (req: Request <{}, {}, PurchaseDto>, res: Response) {
-    const purchase = req.body;
+export async function createEvent (req: Request <{}, {}, EventDto>, res: Response) {
+    const event = req.body;
 
-    if (!purchase.userId || !purchase.productId || !purchase.qty){
+    if (!event.userId){
         return res.status(400).json({
             message: "Invalid blanks"});
     }
 
     const useCase = new CreateEventUseCase();
-    const createdPurchase = await useCase.handle(purchase);
+    const createdEvent = await useCase.handle(event);
 
-    return res.status(201).json(createdPurchase);
+    return res.status(201).json(createdEvent);
+};
+
+
+interface PutParams{
+    eventId: string
+};
+
+export async function updateEvent (req: Request <PutParams, {}, Omit<Omit<Omit<EventDto, "id">, "projectId">, "option">>, res: Response) {
+    const { eventId } = req.params;
+    const eventData = req.body;
+
+    const idEventUseCase = new GetEventUseCase();
+    const getEvent = await idEventUseCase.handle(eventId);
+
+
+
+    if (!getEvent){
+        return res.status(404).json({
+            message: "User not Found to update!"});
+    };
+
+    // Permite atualização somente do valor e da descrição
+    const useCase = new UpdateEventUseCase();
+    const updatedEvent = await useCase.handle({
+        id: eventId, 
+        userId: eventData.userId,
+        status: eventData.status
+    });
+
+    return res.status(200).json(updatedEvent);
 };

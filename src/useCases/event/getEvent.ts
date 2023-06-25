@@ -1,22 +1,22 @@
-import { PrismaClient, Purchase, Products } from "@prisma/client";
+import { PrismaClient, Event, Projects } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 export class GetEventUseCase{
     constructor() {}
 
-    async handle(userId: string): Promise<(Purchase&{product: Products})[]> {
-        const userPurchase = await prisma.purchase.findMany({
+    async handle(eventId: string): Promise<(Event&{project: Projects})[]> {
+        const event = await prisma.event.findMany({
             where: {
-                userId: {
-                    equals: userId
+                id: {
+                    equals: eventId
                 }
             }, include: {
-                product: true
+                project: true
             }
         })
 
-        return userPurchase;
+        return event;
     }
     
     }

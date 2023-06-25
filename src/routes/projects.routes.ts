@@ -5,15 +5,13 @@ import { listProjects, getProject, createProject,
 
 // import { newProduct, validIdProduct, upProduct } from "../validator/productValid"
 
-const productRoutes = Router();
+const projectRoutes = Router();
 
-productRoutes.get("/", listProjects);
-productRoutes.get("/:id", getProject);
-productRoutes.post("/", createProject);
-productRoutes.put("/", updateProject);
-productRoutes.delete("/", deleteProject);
-// productRoutes.post("/", newProduct, createProduct);
-// productRoutes.put("/", upProduct, updateProducts);
-// productRoutes.delete("/", validIdProduct, deleteProduct);
+projectRoutes.get("/", listProjects);
+projectRoutes.get("/:id", getProject);
+projectRoutes.post("/", createProject);
+projectRoutes.put("/:projectId", updateProject);
+projectRoutes.delete("/", deleteProject);
 
-export default productRoutes;
+
+export default projectRoutes;

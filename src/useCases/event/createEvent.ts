@@ -1,23 +1,26 @@
-import { PrismaClient, Purchase } from "@prisma/client";
-import { v4 } from "uuid";
+import { PrismaClient, Event } from "@prisma/client";
+import { ulid } from "ulid";
 
-import { PurchaseDto } from "../../domain/dtos/purchase";
+import { EventDto } from "../../domain/dtos/event";
 
 const prisma = new PrismaClient();
 
 export class CreateEventUseCase{
     constructor() {}
 
-    async handle(purchase: PurchaseDto): Promise<Purchase>{
-        const createdPurchase = await prisma.purchase.create({
+    async handle(event: EventDto): Promise<Event>{
+        const createdEvent = await prisma.event.create({
             data: {
-                id: v4(),
-                userId: purchase.userId,
-                productId: purchase.productId,
-                qty: purchase.qty
+                id: ulid(),
+                userId: event.userId,
+                projectId: event.projectId,
+                option: event.option,
+                status: event.status,
+                neweventdate: String(new Date),
+                upeventdate: String(new Date)
             },
         });
 
-        return createdPurchase;
+        return createdEvent;
     }
 }

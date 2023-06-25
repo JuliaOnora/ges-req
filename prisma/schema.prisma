@@ -11,30 +11,35 @@ datasource db {
 }
 
 model User {
-  id       String @id
+  id       String  @id
   email    String
   name     String
   password String
   salt     String
-  // purchase Purchase[]
+  role     String
+  event    Event[]
 }
 
 model Projects {
-  id          String @id
+  id          String  @id
   name        String
   members     String
   description String
-  // purchase    Purchase[] //// ???????
+  status      String
+  event       Event[]
 }
 
-// model Purchase {
-//   id        String   @id
-//   userId    String
-//   user      User     @relation(fields: [userId], references: [id])
-//   productId Int
-//   product   Projects @relation(fields: [productId], references: [id])
-//   qty       Int
-// }
+model Event {
+  id           String   @id
+  user         User     @relation(fields: [userId], references: [id])
+  userId       String //// id de quem tá fazendo a operação
+  project      Projects @relation(fields: [projectId], references: [id])
+  projectId    String //// id do projeto qual está sendo imposto a operação
+  option       String /// Possíveis eventsUseCases => createEvent, getEvent ou listEvents 
+  status       String
+  neweventdate String /// Criação do Evento
+  upeventdate  String /// Atualização do evento
+}
 
 // model PurchaseItems{
 //   id    Int       @id @default(autoincrement())

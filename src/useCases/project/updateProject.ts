@@ -12,7 +12,8 @@ export class UpdateProjectUseCase{
             data: {
                 name: project.name,
                 members: project.members,
-                description: project.description
+                description: project.description,
+                status: project.status
             }, where: {
                 id: project.id
             }

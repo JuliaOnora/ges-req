@@ -76,12 +76,13 @@ interface PutParams{
     id: string
 };
 
-export async function updateUser (req: Request <PutParams, {}, Omit<UserDto, "id">>, res: Response) {
+export async function updateUser (req: Request <PutParams, {}, Omit<Omit<UserDto, "id">, "salt">>, res: Response) {
     const { id } = req.params;
     const userData = req.body;
 
     const idUserUseCase = new GetUserUseCase();
     const getUser = await idUserUseCase.handle(id);
+
 
 
     if (!getUser){
@@ -93,7 +94,10 @@ export async function updateUser (req: Request <PutParams, {}, Omit<UserDto, "id
     const useCase = new UpdateUserUseCase();
     const updatedUser = await useCase.handle({id, 
         name: userData.name, 
-        email: userData.email});
+        email: userData.email,
+        role: userData.role,
+        password: userData.password
+    });
 
     return res.status(200).json(updatedUser);
 };

@@ -17,7 +17,8 @@ export class CreateUserUseCase{
             data: {
                 id: ulid(),
                 name: user.name,
-                email: user.email, 
+                email: user.email,
+                role: user.role, 
                 password: hashed.hash,
                 salt: hashed.salt
 

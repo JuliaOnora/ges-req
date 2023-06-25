@@ -14,7 +14,8 @@ export class CreateProjectUseCase{
                 id: ulid(),
                 name: project.name,
                 members: project.members,
-                description: project.description
+                description: project.description,
+                status: project.status
             },
         });
 
